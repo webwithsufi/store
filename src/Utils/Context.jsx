@@ -5,21 +5,22 @@ export let ProductContext = createContext();
 function Context(props) {
   // JSON.parse(localStorage.getItem("products")) ||
   const [products, setProducts] = useState(
+   JSON.parse(localStorage.getItem("products")) ||
     null
   );
 
-  const getProducts = async () => {
-    try {
-      let { data } = await axios("/products");
-      setProducts(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getProducts = async () => {
+  //   try {
+  //     let { data } = await axios("/products");
+  //     setProducts(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getProducts();
-  }, []);
+  // useEffect(() => {
+  //   getProducts();
+  // }, []);
 
   return (
     <ProductContext.Provider value={[products, setProducts]}>
