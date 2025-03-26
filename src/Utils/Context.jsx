@@ -2,25 +2,37 @@ import React, { createContext, useEffect, useState } from "react";
 import axios from "./axios";
 
 export let ProductContext = createContext();
+
 function Context(props) {
-  // JSON.parse(localStorage.getItem("products")) ||
-  const [products, setProducts] = useState(
-   JSON.parse(localStorage.getItem("products")) ||
-    null
-  );
+  const [products, setProducts] = useState(null);
 
-  // const getProducts = async () => {
-  //   try {
-  //     let { data } = await axios("/products");
-  //     setProducts(data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  // Load products from localStorage on mount
+  useEffect(() => {
+    const storedProducts = localStorage.getItem("products");
+    if (storedProducts) {
+      setProducts(JSON.parse(storedProducts));
+    } else {
+      getProducts();
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   getProducts();
-  // }, []);
+  // Fetch products from API
+  const getProducts = async () => {
+    try {
+      let { data } = await axios.get("/products");
+      setProducts(data);
+      localStorage.setItem("products", JSON.stringify(data)); // Save to localStorage
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  // Update localStorage when products change
+  useEffect(() => {
+    if (products) {
+      localStorage.setItem("products", JSON.stringify(products));
+    }
+  }, [products]);
 
   return (
     <ProductContext.Provider value={[products, setProducts]}>
